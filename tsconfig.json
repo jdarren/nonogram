@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "strict": false,
+        "jsx": "react",
+        "outDir": "dist"
+    },
+    "include": [
+        "src/**/*"
+    ]
+}

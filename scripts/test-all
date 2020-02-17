@@ -1,0 +1,7 @@
+#!/bin/sh
+for picFile in `ls -1 pics`
+do
+    clear
+    echo ' ' ======= $picFile ======= 
+    nonogram pics/$picFile
+done
