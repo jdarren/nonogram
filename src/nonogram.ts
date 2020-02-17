@@ -5,7 +5,12 @@ export type GameData = {
     colSegmentsList: Array<number[]>;
 };
 
-import {Vector, Pixel, Dimension} from './vector';
+enum Dimension {
+    Row = 'Row',
+    Column = 'Column'
+};
+
+import {Vector, Pixel} from './vector';
 import {terminal} from 'terminal-kit'; // todo - externalize UI (listener based?)
 
 export class Nonogram {
@@ -19,13 +24,13 @@ export class Nonogram {
             this.rows[i] = new Vector({
                 size,
                 fill,
-                segments: rowSegmentsList[i],
-                dim: Dimension.Row});
+                segments: rowSegmentsList[i]
+            });
             this.cols[i] = new Vector({
                 size,
                 fill,
-                segments: colSegmentsList[i],
-                dim: Dimension.Row});
+                segments: colSegmentsList[i]
+            });
         }
     }
 

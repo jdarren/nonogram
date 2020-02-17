@@ -2,11 +2,6 @@ import {Distribution, combinations} from './combinations';
 
 const sum = (arr: number[]): number => arr.reduce( (a,b) => a + b, 0);
 
-export enum Dimension {
-    Row = 'Row',
-    Column = 'Column'
-};
-
 export enum Pixel {
     Empty = 0,
     On,
@@ -17,7 +12,6 @@ export type VectorData = {
     size: number;
     fill?: Pixel;
     segments: number[];
-    dim: Dimension;
 };
 
 const PixelStrs = [' ', '■', '.'];
@@ -34,15 +28,13 @@ export class Vector {
     size: number;
     data: Pixel[];
     segments: number[];
-    dim: Dimension;
     solutions: Distribution[];
     solutionIdx: number;
 
-    constructor({size, fill, segments, dim}: VectorData) {
+    constructor({size, fill, segments}: VectorData) {
         this.size = size;
         this.data = Array(size);
         this.segments = segments;
-        this.dim = dim;
         if ( fill !== undefined ) {
             // @ts-ignore
             this.fill(fill);
@@ -84,8 +76,7 @@ export class Vector {
     isValidUpTo(n: number): boolean {
         const tempVector = new Vector({
             size: this.size,
-            segments: this.segments,
-            dim: this.dim
+            segments: this.segments
         });
         return this.solutions.some( (_, idx) => {
             tempVector.trySolution(idx);
