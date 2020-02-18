@@ -1,8 +1,11 @@
+import {Vector, Pixel} from './vector';
+
 export type GameData = {
     size: number;
     fill?: Pixel;
     rowSegmentsList: Array<number[]>;
     colSegmentsList: Array<number[]>;
+    progressListener?: (game: Nonogram) => void;
 };
 
 enum Dimension {
@@ -10,14 +13,14 @@ enum Dimension {
     Column = 'Column'
 };
 
-import {Vector, Pixel} from './vector';
-import {terminal} from 'terminal-kit'; // todo - externalize UI (listener based?)
+const noop = () => {};
 
 export class Nonogram {
     rows: Vector[];
     cols: Vector[];
+    progressListener: (game: Nonogram) => void;
 
-    constructor({size, fill, rowSegmentsList, colSegmentsList}: GameData ) {
+    constructor({size, fill, rowSegmentsList, colSegmentsList, progressListener}: GameData ) {
         this.rows = [];
         this.cols = [];
         for ( let i = 0 ; i < size ; i++ ) {
@@ -32,6 +35,7 @@ export class Nonogram {
                 segments: colSegmentsList[i]
             });
         }
+        this.progressListener = progressListener || noop;
     }
 
     toString(endRow: number = -1) : string {
@@ -59,7 +63,6 @@ export class Nonogram {
 
     solve(): void {
         let idx = 0;
-        terminal.saveCursor();
         while ( true ) {
             const row = this.rows[idx];
             let triedAtLeastOneSolution = false;
@@ -68,8 +71,7 @@ export class Nonogram {
                 row.tryNextSolution();
                 this.update(Dimension.Row);
 
-                terminal.restoreCursor();
-                terminal(this.toString()); // show progress. :)
+                this.progressListener(this); // show progress. :)
                 if ( !this.isValidToRow(idx) ) {
                     continue;
                 } else {
