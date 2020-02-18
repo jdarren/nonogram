@@ -1,6 +1,7 @@
 import {readFileSync} from 'fs';
 import {Nonogram} from './nonogram';
 import {Pixel} from './vector';
+import {terminal} from 'terminal-kit';
 
 const [,,...args] = process.argv;
 
@@ -13,7 +14,7 @@ const parseMetaData = (str: string) =>
         );
 
 if ( !args[0] ) {
-    console.log('Usage: nonogram <filename>');
+    console.log('Usage: nonogram <filename> --showProgress');
     process.exit(-1);
 }
 
@@ -28,9 +29,29 @@ if ( rowSegmentsList.length !== colSegmentsList.length ) {
     process.exit(-1);
 }
 
-new Nonogram({
+const showProgress = args[1] === '--showProgress';
+const progressListener = showProgress ?
+    (game: Nonogram) => {
+        terminal(game.toString());
+        terminal.restoreCursor();
+    } : undefined;
+
+if ( showProgress ) {
+    terminal.clear();
+    terminal.moveTo(1, 1);
+    terminal.saveCursor();
+}
+
+const nonogram = new Nonogram({
     size: rowSegmentsList.length,
     fill: Pixel.Empty,
     rowSegmentsList,
-    colSegmentsList
-}).solve();
+    colSegmentsList,
+    progressListener
+});
+nonogram.solve();
+
+if ( showProgress ) {
+    terminal.clear();
+}
+console.log(nonogram.toString());
