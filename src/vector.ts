@@ -12,6 +12,7 @@ export type VectorData = {
     size: number;
     fill?: Pixel;
     segments: number[];
+    solutions?: Distribution[];
 };
 
 const PixelStrs = [' ', '■', '.'];
@@ -31,7 +32,7 @@ export class Vector {
     solutions: Distribution[];
     solutionIdx: number;
 
-    constructor({size, fill, segments}: VectorData) {
+    constructor({size, fill, segments, solutions}: VectorData) {
         this.size = size;
         this.data = Array(size);
         this.segments = segments;
@@ -40,7 +41,7 @@ export class Vector {
             this.fill(fill);
         }
 
-        this.solutions = getSolutions(this);
+        this.solutions = solutions || getSolutions(this);
         this.solutionIdx = 0;
     }
 
@@ -76,7 +77,8 @@ export class Vector {
     isValidUpTo(n: number): boolean {
         const tempVector = new Vector({
             size: this.size,
-            segments: this.segments
+            segments: this.segments,
+            solutions: this.solutions
         });
         return this.solutions.some( (_, idx) => {
             tempVector.trySolution(idx);

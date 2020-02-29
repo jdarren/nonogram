@@ -1,7 +1,6 @@
 import {Vector, Pixel} from './vector';
 
 export type GameData = {
-    size: number;
     fill?: Pixel;
     rowSegmentsList: Array<number[]>;
     colSegmentsList: Array<number[]>;
@@ -16,25 +15,33 @@ enum Dimension {
 const noop = () => {};
 
 export class Nonogram {
+    width: number;
+    height: number;
     rows: Vector[];
     cols: Vector[];
     progressListener: (game: Nonogram) => void;
 
-    constructor({size, fill, rowSegmentsList, colSegmentsList, progressListener}: GameData ) {
+    constructor({fill, rowSegmentsList, colSegmentsList, progressListener}: GameData ) {
         this.rows = [];
         this.cols = [];
-        for ( let i = 0 ; i < size ; i++ ) {
+        this.height = rowSegmentsList.length;
+        this.width = colSegmentsList.length;
+
+        for ( let i = 0 ; i < this.height ; i++ ) {
             this.rows[i] = new Vector({
-                size,
+                size: this.width,
                 fill,
                 segments: rowSegmentsList[i]
             });
+        }
+        for ( let i = 0 ; i < this.width ; i++ ) {
             this.cols[i] = new Vector({
-                size,
+                size: this.height,
                 fill,
                 segments: colSegmentsList[i]
             });
         }
+
         this.progressListener = progressListener || noop;
     }
 

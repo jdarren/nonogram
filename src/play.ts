@@ -22,13 +22,6 @@ const [ rsStr, csStr ] = readFileSync(args[0], 'utf-8').split('\n');
 const rowSegmentsList = parseMetaData(rsStr);
 const colSegmentsList = parseMetaData(csStr);
 
-if ( rowSegmentsList.length !== colSegmentsList.length ) {
-    console.log(
-      `${args[0]} data is invalid ${rowSegmentsList.length} row, ${colSegmentsList.length} columns.`
-    );
-    process.exit(-1);
-}
-
 const showProgress = args[1] === '--showProgress';
 const progressListener = showProgress ?
     (game: Nonogram) => {
@@ -43,7 +36,6 @@ if ( showProgress ) {
 }
 
 const nonogram = new Nonogram({
-    size: rowSegmentsList.length,
     fill: Pixel.Empty,
     rowSegmentsList,
     colSegmentsList,
