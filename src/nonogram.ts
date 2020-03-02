@@ -2,8 +2,8 @@ import {Vector, Pixel} from './vector';
 
 export type GameData = {
     fill?: Pixel;
-    rowSegmentsList: Array<number[]>;
-    colSegmentsList: Array<number[]>;
+    rowHintsList: Array<number[]>;
+    colHintsList: Array<number[]>;
     progressListener?: (game: Nonogram) => void;
 };
 
@@ -21,24 +21,24 @@ export class Nonogram {
     cols: Vector[];
     progressListener: (game: Nonogram) => void;
 
-    constructor({fill, rowSegmentsList, colSegmentsList, progressListener}: GameData ) {
+    constructor({fill, rowHintsList, colHintsList, progressListener}: GameData ) {
         this.rows = [];
         this.cols = [];
-        this.height = rowSegmentsList.length;
-        this.width = colSegmentsList.length;
+        this.height = rowHintsList.length;
+        this.width = colHintsList.length;
 
         for ( let i = 0 ; i < this.height ; i++ ) {
             this.rows[i] = new Vector({
                 size: this.width,
                 fill,
-                segments: rowSegmentsList[i]
+                hints: rowHintsList[i]
             });
         }
         for ( let i = 0 ; i < this.width ; i++ ) {
             this.cols[i] = new Vector({
                 size: this.height,
                 fill,
-                segments: colSegmentsList[i]
+                hints: colHintsList[i]
             });
         }
 
