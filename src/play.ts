@@ -7,8 +7,8 @@ const [,,...args] = process.argv;
 
 const parseMetaData = (str: string) =>
     str.split('|')
-    .map(segments =>
-         segments
+    .map(hints =>
+         hints
          .split(',')
          .map(seg => parseInt(seg,10))
         );
@@ -19,8 +19,8 @@ if ( !args[0] ) {
 }
 
 const [ rsStr, csStr ] = readFileSync(args[0], 'utf-8').split('\n');
-const rowSegmentsList = parseMetaData(rsStr);
-const colSegmentsList = parseMetaData(csStr);
+const rowHintsList = parseMetaData(rsStr);
+const colHintsList = parseMetaData(csStr);
 
 const showProgress = args[1] === '--showProgress';
 const progressListener = showProgress ?
@@ -37,8 +37,8 @@ if ( showProgress ) {
 
 const nonogram = new Nonogram({
     fill: Pixel.Empty,
-    rowSegmentsList,
-    colSegmentsList,
+    rowHintsList,
+    colHintsList,
     progressListener
 });
 nonogram.solve();

@@ -11,16 +11,16 @@ export enum Pixel {
 export type VectorData = {
     size: number;
     fill?: Pixel;
-    segments: number[];
+    hints: number[];
     solutions?: Distribution[];
 };
 
 const PixelStrs = [' ', '■', '.'];
 
 const getSolutions = (vector: Vector) => {
-    const numSlots = vector.segments.length + 1;
+    const numSlots = vector.hints.length + 1;
     const numExtraGaps = vector.size -
-        (sum(vector.segments) + vector.segments.length - 1);
+        (sum(vector.hints) + vector.hints.length - 1);
     return combinations(numSlots, numExtraGaps);
 };
 
@@ -28,14 +28,14 @@ export class Vector {
 
     size: number;
     data: Pixel[];
-    segments: number[];
+    hints: number[];
     solutions: Distribution[];
     solutionIdx: number;
 
-    constructor({size, fill, segments, solutions}: VectorData) {
+    constructor({size, fill, hints, solutions}: VectorData) {
         this.size = size;
         this.data = Array(size);
-        this.segments = segments;
+        this.hints = hints;
         if ( fill !== undefined ) {
             // @ts-ignore
             this.fill(fill);
@@ -60,14 +60,14 @@ export class Vector {
             for ( let j = 0 ; j < extraGaps ; j++ ) {
                 this.set(indexInVector++, Pixel.Off);
             }
-            if (i !== this.segments.length) {
+            if (i !== this.hints.length) {
                 this.setRange(
-                    indexInVector, indexInVector + this.segments[i], Pixel.On
+                    indexInVector, indexInVector + this.hints[i], Pixel.On
                 );
-                indexInVector += this.segments[i];
+                indexInVector += this.hints[i];
 
                 // don't put a gap after the last segment.
-                if ( i !== this.segments.length - 1 ) {
+                if ( i !== this.hints.length - 1 ) {
                     this.set(indexInVector++, Pixel.Off);
                 }
             }
@@ -77,7 +77,7 @@ export class Vector {
     isValidUpTo(n: number): boolean {
         const tempVector = new Vector({
             size: this.size,
-            segments: this.segments,
+            hints: this.hints,
             solutions: this.solutions
         });
         return this.solutions.some( (_, idx) => {
